@@ -5,9 +5,12 @@ try
 {
 $form=new Form("index.php");
 
-$form->setMethod("post");
+$params=array(
+    "id"=>"iddegeri",
+    "class"=>"style",
+);
 
-$form->setId("formm");
+$form->setAdditionalParams($params);
 
 echo $form->show();
 

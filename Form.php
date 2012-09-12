@@ -8,11 +8,7 @@ class Form {
 
     private $_action;
     private $_method;
-    private $_name;
-    private $_accept;
-    private $_enctype;
-    private $_id;
-    private $_class;
+    private $_additionalParams;
 
     public function getAction() {
         return $this->_action;
@@ -52,56 +48,15 @@ class Form {
         }
     }
 
-    public function getName() {
-        return $this->_name;
-    }
-
-    public function setName($name) {
-        $this->_name = $name;
-    }
-
-    public function getAccept() {
-        return $this->_accept;
-    }
-
-    public function setAccept($accept) {
-        $this->_accept = $accept;
-    }
-
-    public function getEnctype() {
-        return $this->_enctype;
-    }
-
-    public function setEnctype($enctype) {
-        $this->_enctype = $enctype;
-    }
-
-    public function getId() {
-        return $this->_id;
-    }
-
-    public function setId($id) {
-        $this->_id = $id;
-    }
-
-    public function getClass() {
-        return $this->_class;
-    }
-
-    public function setClass($class) {
-        $this->_class = $class;
-    }
-
     /**
      * Bir formda action url kesinlikle belirtilmelidir.
      * @param type $actionUrl required.
      * @param type $method optional
      * @param type $name optional
      */
-    public function __construct($actionUrl, $method = "POST", $name = "form1") {
+    public function __construct($actionUrl, $method = "POST") {
         $this->setAction($actionUrl);
         $this->setMethod($method);
-        $this->_name = $name;
     }
 
     /**
@@ -112,13 +67,16 @@ class Form {
         $result = "";
 
         $formAttributes = $this->getSettedAttributes();
+    
+        if (isset($this->_additionalParams)) {
+            $formAttributes.=$this->_additionalParams;
+        }
 
         $result.="<form $formAttributes>";
         $result.="\n</form>";
         return $result;
     }
 
-    
     /**
      * Set edilmiş form attributlarını döndürür birleşik bir string şeklinde
      * @return type 
@@ -134,30 +92,24 @@ class Form {
             $result.="method='$this->_method' ";
         }
 
-        if (isset($this->_name)) {
-            $result.="name='$this->_name' ";
-        }
-        
-        if (isset($this->_class)) {
-            $result.="class='$this->_class' ";
-        }
-              
-        if (isset($this->_accept)) {
-            $result.="accept='$this->_accept' ";
-        }
-        
-        if (isset($this->_enctype)) {
-            $result.="enctype='$this->_enctype' ";
-        }
-        
-        if (isset($this->_id)) {
-            $result.="id='$this->_id' ";
-        }
-        
         return $result;
     }
-    
-    
+
+    /**
+     * Ek parametreler için kullanılır
+     * Çok sık ihtiyaç duyulmayan parametreler,
+     * array olarak key value şeklinde buraya gönderilecek
+     * @param type $params
+     * @return \strıng 
+     */
+    public function setAdditionalParams($params) {
+        $result = " ";
+        foreach ($params as $key => $value) {
+            $result.=$key . "='" . $value . "' ";
+        }
+
+        $this->_additionalParams = $result;
+    }
 
 }
 
