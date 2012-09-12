@@ -1,16 +1,17 @@
 <?php
 include_once 'Form.php';
 
-
 try
 {
 $form=new Form("index.php");
 
 $form->setMethod("post");
 
+$form->setId("formm");
+
 echo $form->show();
 
-var_dump($form);
+//var_dump($form);
 
 }
 catch (Exception $ex)

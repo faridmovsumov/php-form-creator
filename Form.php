@@ -18,6 +18,12 @@ class Form {
         return $this->_action;
     }
 
+    /**
+     * İlgili dosyanın var olup olmadığını kontrol eder. 
+     * Eğer varsa set eder.
+     * @param type $action
+     * @throws Exception 
+     */
     private function setAction($action) {
         if (file_exists(__DIR__ . "/" . $action)) {
             $this->_action = $action;
@@ -30,9 +36,15 @@ class Form {
         return $this->_method;
     }
 
+    /**
+     * Method ya POST ya da GET olabilir
+     * gelen stringe toupper fonksiyonu uygulanıyor.
+     * @param type $method
+     * @throws Exception 
+     */
     public function setMethod($method) {
-        $method=  strtoupper($method);
-        
+        $method = strtoupper($method);
+
         if ($method == "POST" || $method == "GET") {
             $this->_method = $method;
         } else {
@@ -64,11 +76,11 @@ class Form {
         $this->_enctype = $enctype;
     }
 
-    public function getİd() {
+    public function getId() {
         return $this->_id;
     }
 
-    public function setİd($id) {
+    public function setId($id) {
         $this->_id = $id;
     }
 
@@ -88,20 +100,64 @@ class Form {
      */
     public function __construct($actionUrl, $method = "POST", $name = "form1") {
         $this->setAction($actionUrl);
-        $this->_method = $method;
+        $this->setMethod($method);
         $this->_name = $name;
     }
 
     /**
-     * Oluuşturduğumuz formu geri döndürür. 
+     * Oluuşturduğumuz formu geri döndürür.
+     *  
      */
     public function show() {
         $result = "";
-        $result.="<form action='$this->_action'>";
-        $result.="</form>";
 
+        $formAttributes = $this->getSettedAttributes();
+
+        $result.="<form $formAttributes>";
+        $result.="\n</form>";
         return $result;
     }
+
+    
+    /**
+     * Set edilmiş form attributlarını döndürür birleşik bir string şeklinde
+     * @return type 
+     */
+    public function getSettedAttributes() {
+        $result = " ";
+
+        if (isset($this->_action)) {
+            $result.="action='$this->_action' ";
+        }
+
+        if (isset($this->_method)) {
+            $result.="method='$this->_method' ";
+        }
+
+        if (isset($this->_name)) {
+            $result.="name='$this->_name' ";
+        }
+        
+        if (isset($this->_class)) {
+            $result.="class='$this->_class' ";
+        }
+              
+        if (isset($this->_accept)) {
+            $result.="accept='$this->_accept' ";
+        }
+        
+        if (isset($this->_enctype)) {
+            $result.="enctype='$this->_enctype' ";
+        }
+        
+        if (isset($this->_id)) {
+            $result.="id='$this->_id' ";
+        }
+        
+        return $result;
+    }
+    
+    
 
 }
 
