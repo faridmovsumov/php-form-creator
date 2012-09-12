@@ -10,7 +10,7 @@ class Form {
     private $_method;
     private $_additionalParams;
     private $_formElementsArray;
-    private $_tableAttributes="";
+    private $_tableAttributes = "";
 
     public function getAction() {
         return $this->_action;
@@ -65,7 +65,7 @@ class Form {
      * Oluuşturduğumuz formu geri döndürür.
      *  
      */
-    public function show($tableParams=array()) {
+    public function show($tableParams = array()) {
         $result = "";
 
         $formAttributes = $this->getSettedAttributes();
@@ -73,23 +73,17 @@ class Form {
         if (isset($this->_additionalParams)) {
             $formAttributes.=$this->_additionalParams;
         }
-        
-        
-        
-        
+
         $result.="<table $this->_tableAttributes >\n";
-        
-        
-        
+
         $result.="<form $formAttributes>\n";
 
-        
         if (isset($this->_formElementsArray)) {
             foreach ($this->_formElementsArray as $formElement) {
-                $result.="<tr>".$formElement . "</tr>\n";
+                $result.="<tr>" . $formElement . "</tr>\n";
             }
         }
-        
+
         $result.="</form>\n";
         $result.="</table>\n";
         return $result;
@@ -120,7 +114,7 @@ class Form {
      * @param type $params
      * @return \strıng 
      */
-    public function setAdditionalParams($params) {
+    public function setFormAttributes($params) {
         $result = " ";
         foreach ($params as $key => $value) {
             $result.=$key . "='" . $value . "' ";
@@ -129,23 +123,20 @@ class Form {
         $this->_additionalParams = $result;
     }
 
-    public function addInput($type, $name, $label="", $additionalParams=array()) {
+    public function addInput($type, $name, $label = "", $additionalParams = array()) {
 
-        $result="";
-        
-        if($label!="" && $type!="submit")
-        {
+        $result = "";
+
+        if ($label != "" && $type != "submit") {
             $label.=": ";
-            $label="<td>".$label."</td>";
-            $colspan="";
+            $label = "<td>" . $label . "</td>";
+            $colspan = "";
+        } else { //Button ise
+            $additionalParams["value"] = $label;
+            $label = "";
+            $colspan = "colspan='2' align='right'";
         }
-        else //Button ise
-        {
-            $additionalParams["value"]=$label;
-            $label="";
-            $colspan="colspan='2' align='right'";
-        }
-        
+
         $result.="$label <td $colspan ><input ";
 
         if (isset($type)) {
@@ -168,19 +159,56 @@ class Form {
 
         $this->_formElementsArray[] = $result;
     }
-    
-    
-    
-    public function setTableAttributes($attributes=array())
-    {
-        $result="";
-        foreach ($attributes as $key=>$value)
+
+    /**
+     * textarea oluşturmak için kullanılır. 
+     * cols ve rows değerlerini tırnaksız bir şekilde direk integer...
+     * olarak vermeye dikkat ediniz.
+     * @param type integer
+     * @param type integer
+     * @param type $label
+     * @param type $optionalAttributes 
+     */
+    public function addTextArea($cols, $rows, $label, $optionalAttributes = array()) {
+        $result = "";
+        $attributes = "";
+
+        if (is_integer($cols)) {
+            $attributes.="cols='" . $cols . "' ";
+        }
+        else
         {
-            $result.="$key='".$value."' ";
+            $attributes.="cols='25' ";
+        }
+
+        if (is_integer($rows)) {
+            $attributes.="rows='" . $rows . "' ";
+        }
+        else
+        {
+            $attributes.="rows='5' ";
         }
         
-        $this->_tableAttributes=$result;
+        foreach ($optionalAttributes as $key => $value)
+        {
+            $attributes.=$key."='".$value."'";
+        }
+
+        $result.="<td colspan='2' >$label:<br/><textarea $attributes >";
+        $result.="</textarea></td>";
+
+        $this->_formElementsArray[] = $result;
     }
+
+    public function setTableAttributes($attributes = array()) {
+        $result = "";
+        foreach ($attributes as $key => $value) {
+            $result.="$key='" . $value . "' ";
+        }
+
+        $this->_tableAttributes = $result;
+    }
+
 }
 
 ?>
