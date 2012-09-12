@@ -11,7 +11,10 @@ $params=array(
 );
 
 $form->setAdditionalParams($params);
-
+$form->addInput("text", "name","Name");
+$form->addInput("password", "pass","Password");
+$form->addInput("submit", "dugme","Send");
+$form->setTableAttributes(array("border"=>"1"));
 echo $form->show();
 
 //var_dump($form);

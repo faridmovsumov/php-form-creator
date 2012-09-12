@@ -9,6 +9,8 @@ class Form {
     private $_action;
     private $_method;
     private $_additionalParams;
+    private $_formElementsArray;
+    private $_tableAttributes="";
 
     public function getAction() {
         return $this->_action;
@@ -63,17 +65,33 @@ class Form {
      * Oluuşturduğumuz formu geri döndürür.
      *  
      */
-    public function show() {
+    public function show($tableParams=array()) {
         $result = "";
 
         $formAttributes = $this->getSettedAttributes();
-    
+
         if (isset($this->_additionalParams)) {
             $formAttributes.=$this->_additionalParams;
         }
+        
+        
+        
+        
+        $result.="<table $this->_tableAttributes >\n";
+        
+        
+        
+        $result.="<form $formAttributes>\n";
 
-        $result.="<form $formAttributes>";
-        $result.="\n</form>";
+        
+        if (isset($this->_formElementsArray)) {
+            foreach ($this->_formElementsArray as $formElement) {
+                $result.="<tr>".$formElement . "</tr>\n";
+            }
+        }
+        
+        $result.="</form>\n";
+        $result.="</table>\n";
         return $result;
     }
 
@@ -111,6 +129,58 @@ class Form {
         $this->_additionalParams = $result;
     }
 
+    public function addInput($type, $name, $label="", $additionalParams=array()) {
+
+        $result="";
+        
+        if($label!="" && $type!="submit")
+        {
+            $label.=": ";
+            $label="<td>".$label."</td>";
+            $colspan="";
+        }
+        else //Button ise
+        {
+            $additionalParams["value"]=$label;
+            $label="";
+            $colspan="colspan='2' align='right'";
+        }
+        
+        $result.="$label <td $colspan ><input ";
+
+        if (isset($type)) {
+            $result.="type='" . $type . "' ";
+        } else {
+            throw new Exception("Input için type parametresi tanımlamalısınız!");
+        }
+
+        if (isset($name)) {
+            $result.="name='" . $name . "' ";
+        } else {
+            throw new Exception("Input için name parametresi tanımlamalısınız!");
+        }
+
+        foreach ($additionalParams as $key => $value) {
+            $result.=$key . "='" . $value . "' ";
+        }
+
+        $result.=" /></td><br />\n";
+
+        $this->_formElementsArray[] = $result;
+    }
+    
+    
+    
+    public function setTableAttributes($attributes=array())
+    {
+        $result="";
+        foreach ($attributes as $key=>$value)
+        {
+            $result.="$key='".$value."' ";
+        }
+        
+        $this->_tableAttributes=$result;
+    }
 }
 
 ?>
