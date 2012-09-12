@@ -123,6 +123,19 @@ class Form {
         $this->_additionalParams = $result;
     }
 
+    /**
+     * $label: <input type='$type' name='$name' /> şeklinde bir form elemanı oluşturmak için kullanılır.
+     * @param type $type input için type parametresi belirtmek zorunludur. 
+     * password, text veya submit olabilir
+     * @param type $name
+     * Form elemanına atayacağınız isimdir.
+     * @param type $label
+     * Form elemanının labelidir.
+     * @param type $additionalParams
+     * eklemek istediğiniz ek parametreleri key value çiftleri şeklinde
+     * parametre olarak vermeniz gerekiyor. Ek attribute vermek istemiyorsanız boş bırakınız
+     * @throws Exception 
+     */
     public function addInput($type, $name, $label = "", $additionalParams = array()) {
 
         $result = "";
