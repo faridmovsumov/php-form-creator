@@ -9,6 +9,7 @@ class Form {
     private $_additionalParams;
     private $_formElementsArray;
     private $_tableAttributes = "";
+    private $_javascriptValidation="";
 
     public function getAction() {
         return $this->_action;
@@ -86,7 +87,7 @@ class Form {
 
         $result.="</form>\n";
         $result.="</table>\n";
-        return $result;
+        return $result." \n".$this->_javascriptValidation;
     }
 
     /**
@@ -103,7 +104,6 @@ class Form {
         if (isset($this->_method)) {
             $result.="method='$this->_method' ";
         }
-
         return $result;
     }
 
@@ -162,6 +162,7 @@ class Form {
 
         if (isset($name)) {
             $result.="name='" . $name . "' ";
+            $result.="id='" . $name . "' ";
         } else {
             throw new Exception("Input için name parametresi tanımlamalısınız!");
         }
@@ -172,7 +173,9 @@ class Form {
 
         $result.=" /></td><br />\n";
 
-        $this->_formElementsArray[] = $result;
+        $this->_formElementsArray[$name] = $result;
+        
+        return $this;
     }
 
     /**
@@ -184,7 +187,7 @@ class Form {
      * @param type $label
      * @param type $optionalAttributes 
      */
-    public function addTextArea($cols, $rows, $label, $optionalAttributes = array()) {
+    public function addTextArea($cols, $rows, $name, $label, $optionalAttributes = array()) {
         $result = "";
         $attributes = "";
 
@@ -204,6 +207,9 @@ class Form {
             $attributes.="rows='5' ";
         }
         
+        $optionalAttributes['name']=$name;
+        $optionalAttributes['id']=$name;
+        
         foreach ($optionalAttributes as $key => $value)
         {
             $attributes.=$key."='".$value."'";
@@ -212,7 +218,8 @@ class Form {
         $result.="<td colspan='2' class='col double'>$label:<br/><textarea $attributes >";
         $result.="</textarea></td>";
 
-        $this->_formElementsArray[] = $result;
+        $this->_formElementsArray[$name] = $result;
+        return $this;
     }
 
     /**
@@ -243,6 +250,7 @@ class Form {
             'type'=>'checkbox',
             'name'=>$name,
             'value'=>$value,
+            'id'=>$name
         );
 
         //ek parametreleri ekliyoruz
@@ -260,7 +268,8 @@ class Form {
         
         $result="<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
         
-        $this->_formElementsArray[]=$result;
+        $this->_formElementsArray[$name]=$result;
+        return $this;
     }
     
     /**
@@ -278,6 +287,7 @@ class Form {
             'type'=>'radio',
             'name'=>$name,
             'value'=>$value,
+            'id'=>$value,
         );
         
         //ek parametreleri ekliyoruz
@@ -295,7 +305,8 @@ class Form {
         
         $result="<td class='col double' colspan='2' ><input $attributesString /> $label <br/></td>";
         
-        $this->_formElementsArray[]=$result;
+        $this->_formElementsArray[$value]=$result;
+        return $this;
     }
     
     /**
@@ -309,21 +320,41 @@ class Form {
         $this->_formElementsArray[]=$result;
     }
     
-    public function addComboBox($label="",$optionsArray=array())
+    public function addComboBox($name,$label="",$optionsArray=array())
     {
         if(!empty($label))
         {
             $label.=":";
         }
         $options="";
-        foreach ($optionsArray as $optionKey=> $optionValue)
+        foreach ($optionsArray as $optionKey => $optionValue)
         {
             $options.="<option value='$optionKey' >$optionValue</option>\n";
         }
         
-        $result="<td class='col one' >$label</td><td class='col two'>\n<select>\n$options</select>\n<br/></td>";
+        $result="<td class='col one' >$label</td><td class='col two'>\n<select id='$name' name='$name'>\n$options</select>\n<br/></td>";
         
-        $this->_formElementsArray[]=$result;
+        $this->_formElementsArray[$name]=$result;
+        
+        return $this;
     }
+    
+    public function setValidation($validationRulesArray){
+        
+        $result="";
+        
+        $htmlElementId="";
+        $htmlElementId = array_pop(array_keys($this->_formElementsArray));        
+        
+        $result.= "\n<script type='text/javascript'>\n";
+        $result.= "var $htmlElementId = document.getElementById('$htmlElementId');\n";
+        $result.= "alert('Eleman:'+'$htmlElementId');";
+        $result.= "</script>\n";
+        
+        $this->_javascriptValidation= $result;
+    }
+    
+
+    
 }
 ?>
