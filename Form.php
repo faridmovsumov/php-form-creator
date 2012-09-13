@@ -221,7 +221,41 @@ class Form {
 
         $this->_tableAttributes = $result;
     }
+    
+    /**
+     *
+     * @param type $name
+     * @param type $value
+     * @param type $label
+     * @param type $additionalParams 
+     */
+    public function addCheckBox($name,$value,$label,$additionalParams=array())
+    {
+        //Kullanıcıdan alınan parametreleri ekliyoruz
+        if(isset($name) && !empty($name) && isset($value) && !empty($value))
+        $attributes=array(
+            'type'=>'checkbox',
+            'name'=>$name,
+            'value'=>$value,
+        );
 
+        //ek parametreleri ekliyoruz
+        foreach ($additionalParams as $attributeName=>$attributeValue)
+        {
+            $attributes[$attributeName]=$attributeValue;
+        }
+        
+        $attributesString="";
+        //Butun parametreleri tek bir string haline dönüştüreceğiz.
+        foreach ($attributes as $attributeKey=>$val)
+        {
+            $attributesString.=$attributeKey."='".$val."' ";
+        }
+        
+        $result="<td colspan='2' ><input $attributesString /> $label <br /></td>";
+        
+        $this->_formElementsArray[]=$result;
+    }
+    
 }
-
 ?>
