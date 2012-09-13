@@ -5,7 +5,6 @@
  * @author Ferid Movsumov
  */
 class Form {
-
     private $_action;
     private $_method;
     private $_additionalParams;
@@ -18,12 +17,14 @@ class Form {
 
     /**
      * İlgili dosyanın var olup olmadığını kontrol eder. 
+     * file_get_contents ile dosyanın varlığını kontrol etmem ne kadar doğru emin değilim
+     * Amaç geliştiricinin yazım hatsaından kaynaklanan hatanın kaynağını bulmasını kolaylaştırmak.
      * Eğer varsa set eder.
      * @param type $action
      * @throws Exception 
      */
     private function setAction($action) {
-        if (file_exists(__DIR__ . "/" . $action)) {
+        if (file_get_contents($action)) {
             $this->_action = $action;
         } else {
             throw new Exception(__DIR__ . "/" . $action . " isimli dosya mevcut değil");
@@ -147,10 +148,10 @@ class Form {
         } else { //Button ise
             $additionalParams["value"] = $label;
             $label = "";
-            $colspan = "colspan='2' align='right'";
+            $colspan = "colspan='2'";
         }
 
-        $result.="$label <td $colspan ><input ";
+        $result.="$label <td  align='right' $colspan ><input ";
 
         if (isset($type)) {
             $result.="type='" . $type . "' ";
@@ -213,6 +214,10 @@ class Form {
         $this->_formElementsArray[] = $result;
     }
 
+    /**
+     * Tabloya ek attributlar atamak için kullanılır.
+     * @param type $attributes 
+     */
     public function setTableAttributes($attributes = array()) {
         $result = "";
         foreach ($attributes as $key => $value) {
@@ -257,6 +262,13 @@ class Form {
         $this->_formElementsArray[]=$result;
     }
     
+    /**
+     * Radio buton eklemek için kullanılır. 
+     * @param type $name
+     * @param type $value
+     * @param type $label Radio buttonun sağındaki text
+     * @param type $additionalParams ek parametreler
+     */
     public function addRadioButton($name,$value,$label,$additionalParams=array())
     {
         //Kullanıcıdan alınan parametreleri ekliyoruz
@@ -287,9 +299,30 @@ class Form {
         $this->_formElementsArray[]=$result;
     }
     
+    /**
+     * Bir satır text eklemek için kullanılabilir
+     * @param type $text 
+     */
     public function addLabel($text)
     {
-        $result="<td colspan='2' >$text<br/></td>";
+        $result="<td colspan='2' >$text<br/></td>\n";
+        
+        $this->_formElementsArray[]=$result;
+    }
+    
+    public function addComboBox($label="",$optionsArray=array())
+    {
+        if(!empty($label))
+        {
+            $label.=":";
+        }
+        $options="";
+        foreach ($optionsArray as $optionKey=> $optionValue)
+        {
+            $options.="<option value='$optionKey' >$optionValue</option>\n";
+        }
+        
+        $result="<td>$label</td><td align='right'>\n<select>\n$options</select>\n<br/></td>";
         
         $this->_formElementsArray[]=$result;
     }
