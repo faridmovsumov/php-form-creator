@@ -2,16 +2,17 @@
     <head>
     <title>Form.php Örnek Kullanım</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<div align='center''>
+<div align='center'>
 <?php
 include_once 'Form.php';
 
 try {
     $form = new Form("index.php");
     $form->setFormAttributes(array('id' => 'ornekId'));
-    $form->setTableAttributes(array("cellspacing" => "2", "cellpadding" => "1"));
+    $form->setTableAttributes(array("class"=>"table"));
     $form->addInput("text", "name", "İsim");
     $form->addInput("password", "pass", "Şifre");
     $form->addLabel("Cinsiyet:");
@@ -22,6 +23,7 @@ try {
     $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum");
     $form->addInput("submit", "dugme", "Gönder");
     echo $form->show();
+    
 } catch (Exception $ex) {
     echo $ex->getMessage();
 }

@@ -1,0 +1,36 @@
+/* 
+    Document   : style
+    Created on : 13.Eyl.2012, 12:10:24
+    Author     : user
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.table{
+    padding:10px;
+    margin:0px;
+}
+
+.table .row .col.two {
+    background:#fff6dc;
+}
+
+.table .row .col.one {
+    background:#fff6dc;
+}
+
+.table .row .col.double {
+    background:#fff6dc;
+    
+}
+
+.table .row{
+    
+}
+
+
+

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Amac kolay ve hizli bir sekilde form olusturulabimesini saglamak.
  * @author Ferid Movsumov
@@ -66,7 +65,7 @@ class Form {
      * Oluuşturduğumuz formu geri döndürür.
      *  
      */
-    public function show($tableParams = array()) {
+    public function show() {
         $result = "";
 
         $formAttributes = $this->getSettedAttributes();
@@ -81,7 +80,7 @@ class Form {
 
         if (isset($this->_formElementsArray)) {
             foreach ($this->_formElementsArray as $formElement) {
-                $result.="<tr>" . $formElement . "</tr>\n";
+                $result.="<tr class='row'>" . $formElement . "</tr>\n";
             }
         }
 
@@ -140,18 +139,20 @@ class Form {
     public function addInput($type, $name, $label = "", $additionalParams = array()) {
 
         $result = "";
-
+        $colspan="";
+        
         if ($label != "" && $type != "submit") {
             $label.=": ";
-            $label = "<td>" . $label . "</td>";
-            $colspan = "";
+            $label = "<td class='col one'>" . $label . "</td>";
+            $class='col two';
         } else { //Button ise
             $additionalParams["value"] = $label;
             $label = "";
-            $colspan = "colspan='2'";
+            $class = 'col double';
+            $colspan="colspan='2'";
         }
 
-        $result.="$label <td  align='right' $colspan ><input ";
+        $result.="$label <td class='$class' $colspan ><input ";
 
         if (isset($type)) {
             $result.="type='" . $type . "' ";
@@ -208,7 +209,7 @@ class Form {
             $attributes.=$key."='".$value."'";
         }
 
-        $result.="<td colspan='2' >$label:<br/><textarea $attributes >";
+        $result.="<td colspan='2' class='col double'>$label:<br/><textarea $attributes >";
         $result.="</textarea></td>";
 
         $this->_formElementsArray[] = $result;
@@ -257,7 +258,7 @@ class Form {
             $attributesString.=$attributeKey."='".$val."' ";
         }
         
-        $result="<td colspan='2' ><input $attributesString /> $label <br /></td>";
+        $result="<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
         
         $this->_formElementsArray[]=$result;
     }
@@ -284,9 +285,7 @@ class Form {
         {
             $attributes[$attributeName]=$attributeValue;
         }
-        
-        
-        
+               
         $attributesString="";
         //Butun parametreleri tek bir string haline dönüştüreceğiz.
         foreach ($attributes as $attributeKey=>$val)
@@ -294,7 +293,7 @@ class Form {
             $attributesString.=$attributeKey."='".$val."' ";
         }
         
-        $result="<td colspan='2' ><input $attributesString /> $label <br/></td>";
+        $result="<td class='col double' colspan='2' ><input $attributesString /> $label <br/></td>";
         
         $this->_formElementsArray[]=$result;
     }
@@ -305,7 +304,7 @@ class Form {
      */
     public function addLabel($text)
     {
-        $result="<td colspan='2' >$text<br/></td>\n";
+        $result="<td class='col double' colspan='2' >$text<br/></td>\n";
         
         $this->_formElementsArray[]=$result;
     }
@@ -322,10 +321,9 @@ class Form {
             $options.="<option value='$optionKey' >$optionValue</option>\n";
         }
         
-        $result="<td>$label</td><td align='right'>\n<select>\n$options</select>\n<br/></td>";
+        $result="<td class='col one' >$label</td><td class='col two'>\n<select>\n$options</select>\n<br/></td>";
         
         $this->_formElementsArray[]=$result;
     }
-    
 }
 ?>
