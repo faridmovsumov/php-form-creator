@@ -3,6 +3,8 @@
     <title>Form.php Örnek Kullanım</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/validation.js"></script>
 </head>
 <body>
 <div align='center'>
@@ -11,10 +13,10 @@ include_once 'Form.php';
 
 try {
     $form = new Form("index.php");
-    $form->setFormAttributes(array('id' => 'ornekId'));
+    $form->setFormAttributes(array('id' => 'formId'));
     $form->setTableAttributes(array("class"=>"table"));
-    $form->addInput("text", "name", "İsim")->setValidation(array());
-    $form->addInput("password", "pass", "Şifre");
+    $form->addInput("text", "name", "İsim")->setValidation(array("required"=>true));
+    $form->addInput("password", "pass", "Şifre")->setValidation(array("required"=>true));
     $form->addLabel("Cinsiyet:");
     $form->addRadioButton("cinsiyet", "erkek", "Erkek",array("checked"=>"checked"));
     $form->addRadioButton("cinsiyet", "bayan", "Bayan");

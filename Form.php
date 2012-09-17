@@ -1,15 +1,36 @@
 <?php
+
+include_once 'PhpValidation.php';
+include_once 'JavascriptValidation.php';
+
 /**
  * Amac kolay ve hizli bir sekilde form olusturulabimesini saglamak.
  * @author Ferid Movsumov
  */
 class Form {
+
     private $_action;
     private $_method;
     private $_additionalParams;
     private $_formElementsArray;
     private $_tableAttributes = "";
-    private $_javascriptValidation="";
+    private $_javascriptValidation = "";
+    private $_jsValidation;
+    private $_phpValidation;
+    private $_jsValidationCode="";
+
+    /**
+     * Bir formda action url kesinlikle belirtilmelidir.
+     * @param type $actionUrl required.
+     * @param type $method optional
+     * @param type $name optional
+     */
+    public function __construct($actionUrl, $method = "POST") {
+        $this->setAction($actionUrl);
+        $this->setMethod($method);
+        $this->_phpValidation=new PhpValidation();
+        $this->_javascriptValidation=new JavascriptValidation();
+    }
 
     public function getAction() {
         return $this->_action;
@@ -52,17 +73,6 @@ class Form {
     }
 
     /**
-     * Bir formda action url kesinlikle belirtilmelidir.
-     * @param type $actionUrl required.
-     * @param type $method optional
-     * @param type $name optional
-     */
-    public function __construct($actionUrl, $method = "POST") {
-        $this->setAction($actionUrl);
-        $this->setMethod($method);
-    }
-
-    /**
      * Oluuşturduğumuz formu geri döndürür.
      *  
      */
@@ -75,6 +85,7 @@ class Form {
             $formAttributes.=$this->_additionalParams;
         }
 
+        $result.="<div align='center' id='warnings'></div>";
         $result.="<table $this->_tableAttributes >\n";
 
         $result.="<form $formAttributes>\n";
@@ -85,9 +96,18 @@ class Form {
             }
         }
 
-        $result.="</form>\n";
-        $result.="</table>\n";
-        return $result." \n".$this->_javascriptValidation;
+//        $result.="</form>\n";
+//        $result.="</table>\n";
+//        
+//        $result.="<script type=text/javascript>";
+//        $result.="function validate(){";
+//        $result.=$this->_javascriptValidation;
+//        $result.="}";
+//        $result.="</script>";
+
+        $result.="\n" . $this->_javascriptValidation->getJavascriptValidationCode();
+
+        return $result;
     }
 
     /**
@@ -139,17 +159,18 @@ class Form {
     public function addInput($type, $name, $label = "", $additionalParams = array()) {
 
         $result = "";
-        $colspan="";
-        
+        $colspan = "";
+
         if ($label != "" && $type != "submit") {
             $label.=": ";
             $label = "<td class='col one'>" . $label . "</td>";
-            $class='col two';
+            $class = 'col two';
         } else { //Button ise
             $additionalParams["value"] = $label;
+            $additionalParams['onClick'] = "validate()";
             $label = "";
             $class = 'col double';
-            $colspan="colspan='2'";
+            $colspan = "colspan='2'";
         }
 
         $result.="$label <td class='$class' $colspan ><input ";
@@ -174,7 +195,7 @@ class Form {
         $result.=" /></td><br />\n";
 
         $this->_formElementsArray[$name] = $result;
-        
+
         return $this;
     }
 
@@ -193,26 +214,21 @@ class Form {
 
         if (is_integer($cols)) {
             $attributes.="cols='" . $cols . "' ";
-        }
-        else
-        {
+        } else {
             $attributes.="cols='25' ";
         }
 
         if (is_integer($rows)) {
             $attributes.="rows='" . $rows . "' ";
-        }
-        else
-        {
+        } else {
             $attributes.="rows='5' ";
         }
-        
-        $optionalAttributes['name']=$name;
-        $optionalAttributes['id']=$name;
-        
-        foreach ($optionalAttributes as $key => $value)
-        {
-            $attributes.=$key."='".$value."'";
+
+        $optionalAttributes['name'] = $name;
+        $optionalAttributes['id'] = $name;
+
+        foreach ($optionalAttributes as $key => $value) {
+            $attributes.=$key . "='" . $value . "'";
         }
 
         $result.="<td colspan='2' class='col double'>$label:<br/><textarea $attributes >";
@@ -234,7 +250,7 @@ class Form {
 
         $this->_tableAttributes = $result;
     }
-    
+
     /**
      *
      * @param type $name
@@ -242,36 +258,33 @@ class Form {
      * @param type $label
      * @param type $additionalParams 
      */
-    public function addCheckBox($name,$value,$label,$additionalParams=array())
-    {
+    public function addCheckBox($name, $value, $label, $additionalParams = array()) {
         //Kullanıcıdan alınan parametreleri ekliyoruz
-        if(isset($name) && !empty($name) && isset($value) && !empty($value))
-        $attributes=array(
-            'type'=>'checkbox',
-            'name'=>$name,
-            'value'=>$value,
-            'id'=>$name
-        );
+        if (isset($name) && !empty($name) && isset($value) && !empty($value))
+            $attributes = array(
+                'type' => 'checkbox',
+                'name' => $name,
+                'value' => $value,
+                'id' => $name
+            );
 
         //ek parametreleri ekliyoruz
-        foreach ($additionalParams as $attributeName=>$attributeValue)
-        {
-            $attributes[$attributeName]=$attributeValue;
+        foreach ($additionalParams as $attributeName => $attributeValue) {
+            $attributes[$attributeName] = $attributeValue;
         }
-        
-        $attributesString="";
+
+        $attributesString = "";
         //Butun parametreleri tek bir string haline dönüştüreceğiz.
-        foreach ($attributes as $attributeKey=>$val)
-        {
-            $attributesString.=$attributeKey."='".$val."' ";
+        foreach ($attributes as $attributeKey => $val) {
+            $attributesString.=$attributeKey . "='" . $val . "' ";
         }
-        
-        $result="<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
-        
-        $this->_formElementsArray[$name]=$result;
+
+        $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
+
+        $this->_formElementsArray[$name] = $result;
         return $this;
     }
-    
+
     /**
      * Radio buton eklemek için kullanılır. 
      * @param type $name
@@ -279,82 +292,81 @@ class Form {
      * @param type $label Radio buttonun sağındaki text
      * @param type $additionalParams ek parametreler
      */
-    public function addRadioButton($name,$value,$label,$additionalParams=array())
-    {
+    public function addRadioButton($name, $value, $label, $additionalParams = array()) {
         //Kullanıcıdan alınan parametreleri ekliyoruz
-        if(isset($name) && !empty($name) && isset($value) && !empty($value))
-        $attributes=array(
-            'type'=>'radio',
-            'name'=>$name,
-            'value'=>$value,
-            'id'=>$value,
-        );
-        
+        if (isset($name) && !empty($name) && isset($value) && !empty($value))
+            $attributes = array(
+                'type' => 'radio',
+                'name' => $name,
+                'value' => $value,
+                'id' => $value,
+            );
+
         //ek parametreleri ekliyoruz
-        foreach ($additionalParams as $attributeName=>$attributeValue)
-        {
-            $attributes[$attributeName]=$attributeValue;
+        foreach ($additionalParams as $attributeName => $attributeValue) {
+            $attributes[$attributeName] = $attributeValue;
         }
-               
-        $attributesString="";
+
+        $attributesString = "";
         //Butun parametreleri tek bir string haline dönüştüreceğiz.
-        foreach ($attributes as $attributeKey=>$val)
-        {
-            $attributesString.=$attributeKey."='".$val."' ";
+        foreach ($attributes as $attributeKey => $val) {
+            $attributesString.=$attributeKey . "='" . $val . "' ";
         }
-        
-        $result="<td class='col double' colspan='2' ><input $attributesString /> $label <br/></td>";
-        
-        $this->_formElementsArray[$value]=$result;
+
+        $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br/></td>";
+
+        $this->_formElementsArray[$value] = $result;
         return $this;
     }
-    
+
     /**
      * Bir satır text eklemek için kullanılabilir
      * @param type $text 
      */
-    public function addLabel($text)
-    {
-        $result="<td class='col double' colspan='2' >$text<br/></td>\n";
-        
-        $this->_formElementsArray[]=$result;
+    public function addLabel($text) {
+        $result = "<td class='col double' colspan='2' >$text<br/></td>\n";
+
+        $this->_formElementsArray[] = $result;
     }
-    
-    public function addComboBox($name,$label="",$optionsArray=array())
-    {
-        if(!empty($label))
-        {
+
+    public function addComboBox($name, $label = "", $optionsArray = array()) {
+        if (!empty($label)) {
             $label.=":";
         }
-        $options="";
-        foreach ($optionsArray as $optionKey => $optionValue)
-        {
+        $options = "";
+        foreach ($optionsArray as $optionKey => $optionValue) {
             $options.="<option value='$optionKey' >$optionValue</option>\n";
         }
-        
-        $result="<td class='col one' >$label</td><td class='col two'>\n<select id='$name' name='$name'>\n$options</select>\n<br/></td>";
-        
-        $this->_formElementsArray[$name]=$result;
-        
+
+        $result = "<td class='col one' >$label</td><td class='col two'>\n<select id='$name' name='$name'>\n$options</select>\n<br/></td>";
+
+        $this->_formElementsArray[$name] = $result;
+
         return $this;
     }
-    
-    public function setValidation($validationRulesArray){
-        
-        $result="";
-        
-        $htmlElementId="";
-        $htmlElementId = array_pop(array_keys($this->_formElementsArray));        
-        
-        $result.= "\n<script type='text/javascript'>\n";
-        $result.= "var $htmlElementId = document.getElementById('$htmlElementId');\n";
-        $result.= "alert('Eleman:'+'$htmlElementId');";
-        $result.= "</script>\n";
-        
-        $this->_javascriptValidation= $result;
-    }
-    
 
-    
+    public function setValidation($validationRulesArray = array()) {
+        $lastHtmlElementId = "";
+        $lastHtmlElementId = array_pop(array_keys($this->_formElementsArray));
+
+        $this->_javascriptValidation->setFormElementId($lastHtmlElementId);
+
+        //@Todo kontroller biraz daha sıkı yapılacak
+        if (isset($validationRulesArray['required'])) {
+            $this->_javascriptValidation->setRequired($validationRulesArray['required']);
+        }
+
+        if (isset($validationRulesArray['min'])) {
+            $this->_javascriptValidation->setRequired($validationRulesArray['min']);
+        }
+
+        if (isset($validationRulesArray['max'])) {
+            $this->_javascriptValidation->setRequired($validationRulesArray['max']);
+        }
+
+        $this->_jsValidationCode.=$this->_javascriptValidation->generateCode();
+    }
+
 }
+
 ?>
