@@ -357,10 +357,15 @@ class Form {
         $elementId = $index[0];
         $elementType = $index[2];
 
-        $this->_javascriptValidation->setFormElementId($elementId);
-        $this->_javascriptValidation->setLabel($elementLabel);
-        $this->_javascriptValidation->setType($elementType);
-
+        if(isset($elementId) && isset($elementLabel) && isset($elementType)) {
+            $this->_javascriptValidation->setFormElementId($elementId);
+            $this->_javascriptValidation->setLabel($elementLabel);
+            $this->_javascriptValidation->setType($elementType);
+        }
+        else
+        {
+            throw new Exception("Id, Type veya Label atanmamış");
+        }
         //input type text veya textarea oldugu durumlar icin
         //@Todo kontroller biraz daha sıkı yapılacak
         if (isset($validationRulesArray['required'])) {
@@ -378,8 +383,6 @@ class Form {
         if (isset($validationRulesArray['mustBeChecked'])) {
             $this->_javascriptValidation->setMustBeChecked($validationRulesArray['mustBeChecked']);
         }
-
-
         $this->_jsValidationCode.=$this->_javascriptValidation->generateCode();
     }
 
