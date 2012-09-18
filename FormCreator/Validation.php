@@ -1,12 +1,11 @@
 <?php
 /**
  * Description of Validation
- *
  * @author Ferid Mövsümov
  */
 abstract class Validation {
-    protected $_maxLength = 50;
-    protected $_minLength = 1;
+    protected $_maxLength = 250;
+    protected $_minLength = 0;
     protected $_required = false;
     protected $_label;
     protected $_mustBeChecked=false;
@@ -62,6 +61,5 @@ abstract class Validation {
         $this->_required = $required;
     }
     
-    public abstract function generateCode();
 }
 ?>

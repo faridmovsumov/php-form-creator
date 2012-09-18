@@ -12,7 +12,7 @@
 include_once 'FormCreator/Form.php';
 
 try {
-    $form = new Form("index.php");
+    $form = new Form("test.php");
     $form->setFormAttributes(array('id' => 'formId'));
     $form->setTableAttributes(array("class"=>"table"));
     $form->addInput("text", "name", "İsim")->setValidation(array("required"=>true,"min"=>3));
@@ -23,7 +23,7 @@ try {
     $form->addComboBox("carbrand","Arabanızın Markası", array('mercedes' => 'Mercedes', 'bmw' => 'BMW'));
     $form->addTextArea(32, 5, "adres","Adres");
     $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum")->setValidation(array("mustBeChecked"=>true));
-    $form->addInput("submit", "dugme", "Gönder");
+    $form->addInput("submit", "dugme", "Kaydet");
     echo $form->show();
 } catch (Exception $ex) {
     echo $ex->getMessage();
