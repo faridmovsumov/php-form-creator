@@ -32,5 +32,9 @@ root {
     
 }
 
+.table .row .warnings{
+     color: red;
+}
+
 
 

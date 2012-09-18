@@ -8,7 +8,17 @@ abstract class Validation {
     protected $_maxLength = 50;
     protected $_minLength = 1;
     protected $_required = false;
+    protected $_label;
     
+    public function getLabel() {
+        return $this->_label;
+    }
+
+    public function setLabel($label) {
+        $this->_label = $label;
+    }
+
+        
     public function getMaxLength() {
         return $this->_maxLength;
     }
