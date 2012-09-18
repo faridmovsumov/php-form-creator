@@ -76,7 +76,14 @@ class JavascriptValidation extends Validation {
 
                  ";
 
-
+        if ($this->_mustBeChecked) {
+            $jsCode.="
+                        if(!$('#" . $this->_formElementId . "').is(':checked'))
+                        {
+                            warnings +='" . $this->_label . " tiklemediniz.<br/>';
+                        }
+                 ";
+        }
 
         static::$_jsCode.=$jsCode;
         return $jsCode;

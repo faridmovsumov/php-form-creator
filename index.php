@@ -22,7 +22,7 @@ try {
     $form->addRadioButton("cinsiyet", "bayan", "Bayan");
     $form->addComboBox("carbrand","Arabanızın Markası", array('mercedes' => 'Mercedes', 'bmw' => 'BMW'));
     $form->addTextArea(32, 5, "adres","Adres");
-    $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum");
+    $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum")->setValidation(array("mustBeChecked"=>true));
     $form->addInput("submit", "dugme", "Gönder");
     echo $form->show();
     

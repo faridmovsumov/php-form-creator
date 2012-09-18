@@ -17,7 +17,7 @@ class Form {
     private $_javascriptValidation = "";
     private $_jsValidation;
     private $_phpValidation;
-    private $_jsValidationCode="";
+    private $_jsValidationCode = "";
 
     /**
      * Bir formda action url kesinlikle belirtilmelidir.
@@ -28,8 +28,8 @@ class Form {
     public function __construct($actionUrl, $method = "POST") {
         $this->setAction($actionUrl);
         $this->setMethod($method);
-        $this->_phpValidation=new PhpValidation();
-        $this->_javascriptValidation=new JavascriptValidation();
+        $this->_phpValidation = new PhpValidation();
+        $this->_javascriptValidation = new JavascriptValidation();
     }
 
     public function getAction() {
@@ -84,11 +84,11 @@ class Form {
         if (isset($this->_additionalParams)) {
             $formAttributes.=$this->_additionalParams;
         }
-        
+
         $result.="<table $this->_tableAttributes >\n";
 
         $result.="<tr class='row'><td id='warnings' colspan='2' class='warnings'></td></tr>";
-        
+
         $result.="<form $formAttributes>\n";
 
         if (isset($this->_formElementsArray)) {
@@ -150,7 +150,7 @@ class Form {
      */
     public function addInput($type, $name, $label = "", $additionalParams = array()) {
 
-        $originalLabel=$label;
+        $originalLabel = $label;
         $result = "";
         $colspan = "";
 
@@ -163,7 +163,7 @@ class Form {
             $label = "";
             $class = 'col double';
             $colspan = "colspan='2'";
-            $additionalParams['onClick']="validate()";
+            $additionalParams['onClick'] = "validate()";
         }
 
         $result.="$label <td class='$class' $colspan ><input ";
@@ -187,7 +187,7 @@ class Form {
 
         $result.=" /></td><br />\n";
 
-        $this->_formElementsArray[$name."-".$originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
 
         return $this;
     }
@@ -204,7 +204,7 @@ class Form {
     public function addTextArea($cols, $rows, $name, $label, $optionalAttributes = array()) {
         $result = "";
         $attributes = "";
-        $originalLabel=$label;
+        $originalLabel = $label;
 
         if (is_integer($cols)) {
             $attributes.="cols='" . $cols . "' ";
@@ -228,7 +228,7 @@ class Form {
         $result.="<td colspan='2' class='col double'>$label:<br/><textarea $attributes >";
         $result.="</textarea></td>";
 
-        $this->_formElementsArray[$name."-".$originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
         return $this;
     }
 
@@ -253,9 +253,9 @@ class Form {
      * @param type $additionalParams 
      */
     public function addCheckBox($name, $value, $label, $additionalParams = array()) {
-        
-        $originalLabel=$label;
-        
+
+        $originalLabel = $label;
+
         //Kullanıcıdan alınan parametreleri ekliyoruz
         if (isset($name) && !empty($name) && isset($value) && !empty($value))
             $attributes = array(
@@ -278,7 +278,7 @@ class Form {
 
         $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
 
-        $this->_formElementsArray[$name."-".$originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
         return $this;
     }
 
@@ -290,9 +290,9 @@ class Form {
      * @param type $additionalParams ek parametreler
      */
     public function addRadioButton($name, $value, $label, $additionalParams = array()) {
-        
-        $originalLabel=$label;
-        
+
+        $originalLabel = $label;
+
         //Kullanıcıdan alınan parametreleri ekliyoruz
         if (isset($name) && !empty($name) && isset($value) && !empty($value))
             $attributes = array(
@@ -315,7 +315,7 @@ class Form {
 
         $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br/></td>";
 
-        $this->_formElementsArray[$name."-".$originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
         return $this;
     }
 
@@ -340,7 +340,7 @@ class Form {
 
         $result = "<td class='col one' >$label</td><td class='col two'>\n<select id='$name' name='$name'>\n$options</select>\n<br/></td>";
 
-        $this->_formElementsArray[$name."-".$label] = $result;
+        $this->_formElementsArray[$name . "-" . $label] = $result;
 
         return $this;
     }
@@ -348,14 +348,14 @@ class Form {
     public function setValidation($validationRulesArray = array()) {
         $lastHtmlElementIdAndLabel = "";
         $lastHtmlElementIdAndLabel = array_pop(array_keys($this->_formElementsArray));
-        
-        $elementIdAndLabel = explode( '-', $lastHtmlElementIdAndLabel );
-        
-        $elementLabel="";
-        $elementId="";
-        
-        $elementLabel=$elementIdAndLabel[1];
-        $elementId=$elementIdAndLabel[0];
+
+        $elementIdAndLabel = explode('-', $lastHtmlElementIdAndLabel);
+
+        $elementLabel = "";
+        $elementId = "";
+
+        $elementLabel = $elementIdAndLabel[1];
+        $elementId = $elementIdAndLabel[0];
 
         $this->_javascriptValidation->setFormElementId($elementId);
         $this->_javascriptValidation->setLabel($elementLabel);
@@ -373,8 +373,14 @@ class Form {
             $this->_javascriptValidation->setRequired($validationRulesArray['max']);
         }
 
+        if (isset($validationRulesArray['mustBeChecked'])) {
+            $this->_javascriptValidation->setMustBeChecked($validationRulesArray['mustBeChecked']);
+        }
+
+
         $this->_jsValidationCode.=$this->_javascriptValidation->generateCode();
     }
+
 }
 
 ?>
