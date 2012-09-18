@@ -163,7 +163,6 @@ class Form {
             $label = "";
             $class = 'col double';
             $colspan = "colspan='2'";
-            $additionalParams['onClick'] = "validate()";
         }
 
         $result.="$label <td class='$class' $colspan ><input ";
@@ -187,7 +186,7 @@ class Form {
 
         $result.=" /></td><br />\n";
 
-        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel . "-" . $type] = $result;
 
         return $this;
     }
@@ -228,7 +227,7 @@ class Form {
         $result.="<td colspan='2' class='col double'>$label:<br/><textarea $attributes >";
         $result.="</textarea></td>";
 
-        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel . "-" . "textarea"] = $result;
         return $this;
     }
 
@@ -278,7 +277,7 @@ class Form {
 
         $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
 
-        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel . "-" . "checkbox"] = $result;
         return $this;
     }
 
@@ -315,7 +314,7 @@ class Form {
 
         $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br/></td>";
 
-        $this->_formElementsArray[$name . "-" . $originalLabel] = $result;
+        $this->_formElementsArray[$name . "-" . $originalLabel . "-radio"] = $result;
         return $this;
     }
 
@@ -349,28 +348,31 @@ class Form {
         $lastHtmlElementIdAndLabel = "";
         $lastHtmlElementIdAndLabel = array_pop(array_keys($this->_formElementsArray));
 
-        $elementIdAndLabel = explode('-', $lastHtmlElementIdAndLabel);
+        $index = explode('-', $lastHtmlElementIdAndLabel);
 
         $elementLabel = "";
         $elementId = "";
 
-        $elementLabel = $elementIdAndLabel[1];
-        $elementId = $elementIdAndLabel[0];
+        $elementLabel = $index[1];
+        $elementId = $index[0];
+        $elementType = $index[2];
 
         $this->_javascriptValidation->setFormElementId($elementId);
         $this->_javascriptValidation->setLabel($elementLabel);
+        $this->_javascriptValidation->setType($elementType);
 
+        //input type text veya textarea oldugu durumlar icin
         //@Todo kontroller biraz daha sıkı yapılacak
         if (isset($validationRulesArray['required'])) {
             $this->_javascriptValidation->setRequired($validationRulesArray['required']);
         }
 
         if (isset($validationRulesArray['min'])) {
-            $this->_javascriptValidation->setRequired($validationRulesArray['min']);
+            $this->_javascriptValidation->setMinLength($validationRulesArray['min']);
         }
 
         if (isset($validationRulesArray['max'])) {
-            $this->_javascriptValidation->setRequired($validationRulesArray['max']);
+            $this->_javascriptValidation->setMaxLength($validationRulesArray['max']);
         }
 
         if (isset($validationRulesArray['mustBeChecked'])) {

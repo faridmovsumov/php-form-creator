@@ -48,39 +48,46 @@ class JavascriptValidation extends Validation {
         $jsCode = "";
         //mesajları yazdırmak lazım
 
-        if ($this->_required) {
-            $jsCode.="
+        if ($this->_type == 'text' || $this->_type == 'textarea' || $this->_type == 'password') {
+            if ($this->_required) {
+                $jsCode.="
                         if($('#" . $this->_formElementId . "').val() == '')
                         {
                             warnings +='" . $this->_label . " değeri boş olamaz<br/>'; 
                         }
 
                     ";
+            }
         }
 
         //max kontrolü
-        $jsCode.="
+        if ($this->_type == 'text' || $this->_type == 'textarea' || $this->_type == 'password') {
+            $jsCode.="
                         if($('#" . $this->_formElementId . "').val().length >" . $this->_maxLength . ")
                         {
                             warnings +='" . $this->_label . " büyüklüğü " . $this->_maxLength . " karakterden büyük olamaz<br/>';
                         }
 
                 ";
+        }
 
-        //min kontrolü
-        $jsCode.="
+
+        if ($this->_type == 'text' || $this->_type == 'textarea' || $this->_type == 'password') {
+            //min kontrolü
+            $jsCode.="
                         if($('#" . $this->_formElementId . "').val().length <" . $this->_minLength . ")
                         {
                             warnings +='" . $this->_label . " en az " . $this->_minLength . " karakterden oluşmalıdır.<br/>';
                         }
 
                  ";
+        }
 
-        if ($this->_mustBeChecked) {
+        if ($this->_type == 'checkbox') {
             $jsCode.="
                         if(!$('#" . $this->_formElementId . "').is(':checked'))
                         {
-                            warnings +='" . $this->_label . " tiklemediniz.<br/>';
+                            warnings +='" . $this->_label . " tiklenmelidir!<br/>';
                         }
                  ";
         }

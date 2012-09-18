@@ -10,7 +10,16 @@ abstract class Validation {
     protected $_required = false;
     protected $_label;
     protected $_mustBeChecked=false;
+    protected $_type="";
     
+    public function getType() {
+        return $this->_type;
+    }
+
+    public function setType($type) {
+        $this->_type = $type;
+    }
+        
     public function getMustBeChecked() {
         return $this->_mustBeChecked;
     }

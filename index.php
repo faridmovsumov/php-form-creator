@@ -9,14 +9,14 @@
 <body>
 <div align='center'>
 <?php
-include_once 'Form.php';
+include_once 'FormCreator/Form.php';
 
 try {
     $form = new Form("index.php");
     $form->setFormAttributes(array('id' => 'formId'));
     $form->setTableAttributes(array("class"=>"table"));
-    $form->addInput("text", "name", "İsim")->setValidation(array("required"=>true));
-    $form->addInput("password", "pass", "Şifre")->setValidation(array("required"=>true));
+    $form->addInput("text", "name", "İsim")->setValidation(array("required"=>true,"min"=>3));
+    $form->addInput("password", "pass", "Şifre")->setValidation(array("required"=>true,"min"=>8));
     $form->addLabel("Cinsiyet:");
     $form->addRadioButton("cinsiyet", "erkek", "Erkek",array("checked"=>"checked"));
     $form->addRadioButton("cinsiyet", "bayan", "Bayan");
@@ -25,7 +25,6 @@ try {
     $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum")->setValidation(array("mustBeChecked"=>true));
     $form->addInput("submit", "dugme", "Gönder");
     echo $form->show();
-    
 } catch (Exception $ex) {
     echo $ex->getMessage();
 }
