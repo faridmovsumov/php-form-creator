@@ -17,6 +17,7 @@ try {
     $form->setTableAttributes(array("class"=>"table"));
     $form->addInput("text", "name", "İsim")->setValidation(array("required"=>true,"min"=>3));
     $form->addInput("password", "pass", "Şifre")->setValidation(array("required"=>true,"min"=>8));
+    $form->addInput("text", "yas","Yaş");
     $form->addLabel("Cinsiyet:");
     $form->addRadioButton("cinsiyet", "erkek", "Erkek",array("checked"=>"checked"));
     $form->addRadioButton("cinsiyet", "bayan", "Bayan");

@@ -8,7 +8,6 @@ abstract class Validation {
     protected $_minLength = 0;
     protected $_required = false;
     protected $_label;
-    protected $_mustBeChecked=false;
     protected $_type="";
     
     public function getType() {

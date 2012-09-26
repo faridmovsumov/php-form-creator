@@ -10,6 +10,7 @@ class JavascriptValidation extends Validation {
 
     private $_formElementId;
     private static $_jsCode = "";
+    protected $_mustBeChecked=false;
 
     public function getFormElementId() {
         return $this->_formElementId;
