@@ -4,7 +4,6 @@ require_once '../FormCreator/PhpValidation.php';
 
 /**
  * Description of PhpValidationTest
- *
  * @author Ferid Movsumov
  */
 class PhpValidationTest extends PHPUnit_Framework_TestCase {
@@ -13,6 +12,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
 
     public function setUp() {
         $this->_phpValidation = new PhpValidation();
+        
     }
 
     /**
@@ -51,6 +51,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     //Validation ile ilgili metodların exceptionlarını test ediyoruz..
 
     /**
+     * Set max value sadece integer değerler için çalışır
      * @expectedException  Exception
      * @expectedExceptionCode 5
      */
@@ -112,14 +113,14 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($this->_phpValidation->isValid());
     }
 
-   
     /**
      * @dataProvider providerMaxValue
+     * @covers PhpValidation::setMaxValue
      */
     public function testMaxValue($value, $maxValue) {
         $this->assertTrue($this->_phpValidation->set($value, "int")->setMaxValue($maxValue)->isValid());
     }
-    
+
     /**
      * MaxValue fonksiyonu için bazı degerler atayarak denemeler yapiyorum
      * @return type 
@@ -128,35 +129,49 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
         return array(
             array(1, 5),
             array(1, 6),
-            array(-1,5),
-            array(-10,0)
+            array(-1, 5),
+            array(-10, 0)
         );
     }
-    
-    
+
     /**
      * @dataProvider providerMinLength
      * @param type $value
      * @param type $maxValue 
      */
-    public function testMinLength($value,$maxValue)
-    {
+    public function testMinLength($value, $maxValue) {
         $this->assertTrue($this->_phpValidation->set($value, "string")->setMinLength($maxValue)->isValid());
     }
-    
-    
+
     /**
-     * MaxValue fonksiyonu için bazı degerler atayarak denemeler yapiyorum
+     * MinLength fonksiyonu için bazı degerler atayarak denemeler yapiyorum
      * @return type 
      */
     public function providerMinLength() {
         return array(
             array("selam", 2),
             array("selam", 3),
-            array("ssssssssssss",6),
-            array("denemem",7)
+            array("ssssssssssss", 6),
+            array("denemem", 7)
+        );
+    }
+
+    /**
+     * @covers PhpValidation::isEmail
+     * @covers PhpValidation::set
+     * @covers PhpValidation::isValid
+     * @dataProvider providerIsEmail
+     * @param type $email 
+     */
+    public function testIsEmail($email) {
+        $this->assertTrue($this->_phpValidation->set($email, "string")->isEmail()->isValid());
+    }
+
+    public function providerIsEmail() {
+        return array(
+            array("farid@gmail.com"),
+            array("faridm88@hotmail.com"),
         );
     }
 }
-
 ?>

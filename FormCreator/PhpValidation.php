@@ -160,7 +160,23 @@ class PhpValidation {
                 throw new Exception("setMinLength metoduna parametre olarak pozitif bir tamsayı değeri verilmelidir.");
             }
         } else {
-            throw new Exception("setMinLength metodu yalnizca string degerler icin kullanilabilir", 8);
+            throw new Exception("setMinLength metodu yalnizca string degerler icin kullanilabilir",8);
+        }
+    }
+    
+    
+    public function isEmail()
+    {
+        if ($this->_dataType == "string") {
+            
+            if(!filter_var($this->_variable, FILTER_VALIDATE_EMAIL)){
+                $this->setMessage("Email dogru formatta girilmemis");
+            }
+            
+            return $this;
+        }
+        else {
+            throw new Exception("isEmail metodu yalnızca string degerleri icin kullanilabilkir");
         }
     }
 
