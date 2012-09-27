@@ -10,12 +10,26 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
 
     protected $_phpValidation;
 
+    
+    /**
+     * Öncelikle nesnemizi oluşturuyoruz 
+     */
     public function setUp() {
         $this->_phpValidation = new PhpValidation();
         
     }
+    
+    /**
+     * işimiz bittikten sonra memoryde yer kaplamaması
+     *  için nesnemizi unset ediyoruz 
+     */
+    function tearDown() {
+        // delete your instance
+        unset($this->_phpValidation);
+    }
 
     /**
+     * Eğer desteklenmeyen bir type yazılırsa 1 numaralı exception fırlatılmalıdır
      * @expectedException  Exception
      * @expectedExceptionCode 1
      */
@@ -24,6 +38,8 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Eğer tipi int olarak belirtildiği halde a5 gibi sayısal olmayan
+     * bir değer atanmışsa exception #2 fırlatılır
      * @expectedException  Exception
      * @expectedExceptionCode 2
      */
@@ -32,6 +48,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Eğer tipi float belirtildiği yhalde sayısal olmayan birşey verilmişse
      * @expectedException  Exception
      * @expectedExceptionCode 3
      */
@@ -40,12 +57,13 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Eğer empty bir değer girilirse
      * @expectedException  Exception
      * @expectedExceptionCode 4
      */
     public function testExceptionHasErrorcode4() {
         $this->_phpValidation->set("", "int");
-        $this->_phpValidation->set("   ", "int");
+        $this->_phpValidation->set("   ", "string");
     }
 
     //Validation ile ilgili metodların exceptionlarını test ediyoruz..
@@ -60,6 +78,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Sayısal bir değer için setMaxLength kullanılırsa exception fırlatılır
      * @expectedException  Exception
      * @expectedExceptionCode 6
      */
@@ -68,6 +87,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * String bir değer için setMinValue kullanılırsa exception fırlatılır
      * @expectedException  Exception
      * @expectedExceptionCode 7
      */
@@ -76,6 +96,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
+     * Sayısal bir değer için setMinLength kullanılırsa Exception fırlatılır
      * @expectedException  Exception
      * @expectedExceptionCode 8
      */
