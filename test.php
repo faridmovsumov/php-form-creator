@@ -28,8 +28,8 @@ try {
     $phpValidation->set($_POST['yas'], "int","yas")->setMinValue(0)->setMaxValue(100);
     
     if ($phpValidation->isValid() === false) {
-        echo "<h2>Hata Mesalı</h2>";
-        echo $phpValidation->getMessage();
+        echo "<h2>Hata Mesajı</h2>";
+        var_dump($phpValidation->getMessages());
     }
     
     echo "<hr/>";

@@ -5,7 +5,7 @@ require_once '../FormCreator/PhpValidation.php';
 /**
  * Description of PhpValidationTest
  *
- * @author Fe3rid Mövsümov
+ * @author Ferid Mövsümov
  */
 class PhpValidationTest extends PHPUnit_Framework_TestCase {
 
@@ -82,7 +82,9 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
             array("selam", 6),
             array("selam", 10),
             array("ssssssssssss", 20),
-            array("denemem", 30)
+            array("denemem", 30),
+            array(10,2),
+            array(-10,3)
         );
     }
     
@@ -124,13 +126,11 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
             array("selam", 2),
             array("selam", 3),
             array("ssssssssssss", 6),
-            array("denemem", 7)
+            array("denemem", 7),
+            array(10,2)
         );
     }
     
-    
-    
-
     /**
      * @covers PhpValidation::isEmail
      * @covers PhpValidation::set
@@ -226,8 +226,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
      * @expectedExceptionCode 8
      */
     public function testExceptionHasErrorcode8() {
-        $this->_phpValidation->set("6", "int")->setMinLength(5);
+        $this->_phpValidation->set("6.5", "float")->setMinLength(5);
     }
 }
-
 ?>

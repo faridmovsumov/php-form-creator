@@ -7,7 +7,8 @@
  */
 class PhpValidation {
 
-    private $_message = "";
+    //Hata mesajları bu arrayde tutulur
+    private $_messagesArray = array();
     private $_variable;
     private $_label;
     private $_isValid = true;
@@ -23,9 +24,8 @@ class PhpValidation {
      * Meajları belli bir formatta basar alt alta 
      * @param strıng $message 
      */
-    private function setMessage($message) {
-        $this->_message.=$this->_label . " : " . $message . "<br/>";
-
+    private function addMessage($message) {
+        $this->_messagesArray[] = $this->_label . " : " . $message;
         $this->_isValid = false;
     }
 
@@ -92,8 +92,8 @@ class PhpValidation {
         return $this->_isValid;
     }
 
-    public function getMessage() {
-        return $this->_message;
+    public function getMessages() {
+        return $this->_messagesArray;
     }
 
     //DOĞRULAMALAR   
@@ -106,7 +106,7 @@ class PhpValidation {
         if ($this->_dataType == "int" || $this->_dataType == "float") {
 
             if ($this->_variable > $maxValue) {//şartımıza uymuyor
-                $this->setMessage("deger $maxValue değerinden buyuk olamaz");
+                $this->addMessage("deger $maxValue değerinden buyuk olamaz");
             }
 
             return $this;
@@ -117,19 +117,29 @@ class PhpValidation {
 
     public function setMaxLength($maxLength) {
         if ($this->_dataType == "string") {
-
-            if (is_numeric($maxLength) && intval($maxLength) > 0) {
-
-                if (strlen($this->_variable) > $maxLength) {
-                    $this->setMessage("String uzunluğu $maxLength degerinden buyuk olamaz");
-                }
-            } else {
-                throw new Exception("setMaxLength metoduna parametre olarak pozitif bir tamsayı değeri verilmelidir.");
+            
+                
+            if (strlen($this->_variable) > $maxLength) {
+                $this->addMessage("String uzunluğu $maxLength degerinden buyuk olamaz");
             }
-
             return $this;
-        } else {
-            throw new Exception("setMaxLength metodu yalnizca string degerler icin kullanilabilir", 6);
+                
+            
+        } elseif($this->_dataType == "int") {
+            $this->_variable=(string) $this->_variable;
+            
+            if (strlen($this->_variable) > $maxLength) {
+                $this->addMessage("String uzunluğu $maxLength degerinden buyuk olamaz");
+            }
+            
+            $this->_variable=(int) $this->_variable;
+            
+            return $this;
+            
+            
+        }
+        else {
+            throw new Exception("setMaxLength integer veya float icin kullanilabilir",6);
         }
     }
 
@@ -137,7 +147,7 @@ class PhpValidation {
         if ($this->_dataType == "int" || $this->_dataType == "float") {
 
             if ($this->_variable < $minValue) {//şartımıza uymuyor
-                $this->setMessage("deger $minValue değerinden kucuk olamaz");
+                $this->addMessage("deger $minValue değerinden kucuk olamaz");
             }
             return $this;
         } else {
@@ -149,18 +159,29 @@ class PhpValidation {
 
 
         if ($this->_dataType == "string") {
-            if (is_numeric($minLength) && intval($minLength) > 0) {
+            
                 
-                if (strlen($this->_variable) < $minLength) {
-                    $this->setMessage("String uzunluğu $minLength degerinden kucuk olamaz");
-                }
-                return $this;
-                
-            } else {
-                throw new Exception("setMinLength metoduna parametre olarak pozitif bir tamsayı değeri verilmelidir.");
+            if (strlen($this->_variable) < $minLength) {
+                $this->addMessage("String uzunluğu $minLength degerinden kucuk olamaz");
             }
-        } else {
-            throw new Exception("setMinLength metodu yalnizca string degerler icin kullanilabilir",8);
+            return $this;
+                
+            
+        } elseif($this->_dataType == "int") {
+            $this->_variable=(string) $this->_variable;
+            
+            if (strlen($this->_variable) < $minLength) {
+                $this->addMessage("String uzunluğu $minLength degerinden kucuk olamaz");
+            }
+            
+            $this->_variable=(int) $this->_variable;
+            
+            return $this;
+            
+            
+        }
+        else {
+            throw new Exception("setMinLength integer veya float icin kullanilabilir",8);
         }
     }
     
@@ -170,7 +191,7 @@ class PhpValidation {
         if ($this->_dataType == "string") {
             
             if(!filter_var($this->_variable, FILTER_VALIDATE_EMAIL)){
-                $this->setMessage("Email dogru formatta girilmemis");
+                $this->addMessage("Email dogru formatta girilmemis");
             }
             
             return $this;
