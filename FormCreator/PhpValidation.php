@@ -179,7 +179,6 @@ class PhpValidation {
             throw new Exception("isEmail metodu yalnızca string degerleri icin kullanilabilkir");
         }
     }
-
 }
 
 ?>

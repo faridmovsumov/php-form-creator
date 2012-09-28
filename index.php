@@ -11,11 +11,13 @@
 <?php
 include_once 'FormCreator/Form.php';
 
+//FormHelper ile amele işlerin yaptırılacağı bir class yazılabilir.
+
 try {
     $form = new Form("test.php");
     $form->setFormAttributes(array('id' => 'formId'));
     $form->setTableAttributes(array("class"=>"table"));
-    $form->addInput("text", "name", "İsim")->setValidation(array("required"=>true,"min"=>3));
+    $form->addInput("text", "name", "Email")->setValidation(array("required"=>true,"min"=>3));
     $form->addInput("password", "pass", "Şifre")->setValidation(array("required"=>true,"min"=>8));
     $form->addInput("text", "yas","Yaş");
     $form->addLabel("Cinsiyet:");

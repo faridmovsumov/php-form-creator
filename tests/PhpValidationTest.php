@@ -63,6 +63,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
      */
     public function testExceptionHasErrorcode4() {
         $this->_phpValidation->set("", "int");
+        $this->_phpValidation->set(" \n  ", "string");
         $this->_phpValidation->set("   ", "string");
     }
 
@@ -191,7 +192,7 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     public function providerIsEmail() {
         return array(
             array("farid@gmail.com"),
-            array("faridm88@hotmail.com"),
+            array("faridm88@hotmail.com")
         );
     }
 }

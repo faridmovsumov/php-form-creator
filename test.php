@@ -8,13 +8,9 @@
 </head>
 <body>
 <div align='center'>
-
 <?php
 
-require_once 'FormCreator/PhpValidation.php';
-//Burada php doğrulamasını test betmeyi amaçlıyorum
 
-$phpValidation = new PhpValidation();
 
 echo "<h1>GELEN DEĞİŞKENLER</h1>";
 foreach ($_POST as $key => $val) {
@@ -23,12 +19,15 @@ foreach ($_POST as $key => $val) {
 
 echo "<hr/>";
 
-//name pass yas
 try {
+    require_once 'FormCreator/PhpValidation.php';
+    //Burada php doğrulamasını test betmeyi amaçlıyorum
+
+    $phpValidation = new PhpValidation();
     $phpValidation->set($_POST['name'], "string","name")->setMinLength(2)->setMaxLength(100)->isEmail();
     $phpValidation->set($_POST['yas'], "int","yas")->setMinValue(0)->setMaxValue(100);
     
-    if ($phpValidation->isValid() == false) {
+    if ($phpValidation->isValid() === false) {
         echo "<h2>Hata Mesalı</h2>";
         echo $phpValidation->getMessage();
     }
