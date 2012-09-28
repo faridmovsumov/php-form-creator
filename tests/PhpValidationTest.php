@@ -4,30 +4,154 @@ require_once '../FormCreator/PhpValidation.php';
 
 /**
  * Description of PhpValidationTest
- * @author Ferid Movsumov
+ *
+ * @author Fe3rid Mövsümov
  */
 class PhpValidationTest extends PHPUnit_Framework_TestCase {
 
     protected $_phpValidation;
 
-    
     /**
      * Öncelikle nesnemizi oluşturuyoruz 
      */
     public function setUp() {
         $this->_phpValidation = new PhpValidation();
-        
     }
-    
+
     /**
      * işimiz bittikten sonra memoryde yer kaplamaması
      *  için nesnemizi unset ediyoruz 
      */
-    function tearDown() {
-        // delete your instance
+    public function tearDown() {
         unset($this->_phpValidation);
     }
+    
+    
+    /**
+     * getAllowedDataTypes metodunu test ediyoruz 
+     */
+    public function testGetAllowedDataTypes() {
+        $this->assertContainsOnly('string', $this->_phpValidation->getAllowedDataTypes());
+    }
+    
+    /**
+     * set metodunu çeşitli setler yaparak test ediyoruz 
+     */
+    public function testSet() { 
+        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set("Deneme"));
+        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set("Deneme","string"));
+        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set("Denem123","string"));
+        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set(10, "int", "Rakam"));
+        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set(-10, "int", "Rakam"));
+    }
 
+   
+    /**
+     * @dataProvider providerMaxValue
+     * @covers PhpValidation::setMaxValue
+     */
+    public function testMaxValue($value, $maxValue) {
+        $this->assertTrue($this->_phpValidation->set($value, "int")->setMaxValue($maxValue)->isValid());
+    }
+
+    /**
+     * MaxValue fonksiyonu için bazı degerler atayarak denemeler yapiyorum
+     * @return type 
+     */
+    public function providerMaxValue() {
+        return array(
+            array(1, 5),
+            array(1, 6),
+            array(-1, 5),
+            array(-10, 0)
+        );
+    }
+    
+
+    /**
+     * @dataProvider providerSetMaxLength 
+     */
+    public function testSetMaxLength($value,$maxLength) {
+        $this->assertTrue($this->_phpValidation->set($value, "string")->setMaxLength($maxLength)->isValid());
+    }
+    
+    
+    public function providerSetMaxLength()
+    {
+        return array(
+            array("selam", 6),
+            array("selam", 10),
+            array("ssssssssssss", 20),
+            array("denemem", 30)
+        );
+    }
+    
+    
+    /**
+     * @dataProvider providerSetMinValue
+     * @param type $value
+     * @param type $minValue 
+     */
+    public function testSetMinValue($value, $minValue) {
+         $this->assertTrue($this->_phpValidation->set($value, "int")->setMinValue($minValue)->isValid());
+    }
+    
+    public function providerSetMinValue()
+    {
+        return array(
+            array(2,1),
+            array(3,2),
+            array(-1,-3)
+        );
+    }
+
+    
+    /**
+     * @dataProvider providerMinLength
+     * @param type $value
+     * @param type $maxValue 
+     */
+    public function testMinLength($value, $minLength) {
+        $this->assertTrue($this->_phpValidation->set($value, "string")->setMinLength($minLength)->isValid());
+    }
+
+    /**
+     * MinLength fonksiyonu için bazı degerler atayarak denemeler yapiyorum
+     * @return type 
+     */
+    public function providerMinLength() {
+        return array(
+            array("selam", 2),
+            array("selam", 3),
+            array("ssssssssssss", 6),
+            array("denemem", 7)
+        );
+    }
+    
+    
+    
+
+    /**
+     * @covers PhpValidation::isEmail
+     * @covers PhpValidation::set
+     * @covers PhpValidation::isValid
+     * @dataProvider providerIsEmail
+     * @param type $email 
+     */
+    public function testIsEmail($email) {
+        $this->assertTrue($this->_phpValidation->set($email, "string")->isEmail()->isValid());
+    }
+    
+    public function providerIsEmail() {
+        return array(
+            array("farid@gmail.com"),
+            array("faridm88@hotmail.com")
+        );
+    }
+    
+    
+    //EXCEPTION KONTROLU
+    
     /**
      * Eğer desteklenmeyen bir type yazılırsa 1 numaralı exception fırlatılmalıdır
      * @expectedException  Exception
@@ -104,96 +228,6 @@ class PhpValidationTest extends PHPUnit_Framework_TestCase {
     public function testExceptionHasErrorcode8() {
         $this->_phpValidation->set("6", "int")->setMinLength(5);
     }
-
-    /**
-     * Allowed Data types sadece string degerleri dondurur
-     */
-    public function testGetAllowedDataTypes() {
-        $this->assertContainsOnly('string', $this->_phpValidation->getAllowedDataTypes());
-    }
-
-    /**
-     * Aşağıda kullanılmış olan metodlarin gercekten o sinifa ait bir nesne dondurdugunu test eder
-     */
-    public function testReturnThis() {
-        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set("Deneme"));
-        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set("Deneme")->setMaxLength(5));
-        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set("Deneme")->setMinLength(5));
-        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set(10, "int", "Rakam")->setMinValue(5));
-        $this->assertInstanceOf('PhpValidation', $this->_phpValidation->set(10, "int", "Rakam")->setMaxValue(5));
-    }
-
-    /**
-     * Her bir metodu birer kez test ederek isValid doğru çalışıyor mu test etmiş olacağım
-     */
-    public function testisValid() {
-        $this->_phpValidation->set(5, "int")->setMaxValue(30);
-        $this->_phpValidation->set(5, "int")->setMinValue(1);
-        $this->_phpValidation->set("Deneme", "string")->setMinLength(1);
-        $this->_phpValidation->set("Deneme", "string")->setMaxLength(10);
-
-        $this->assertTrue($this->_phpValidation->isValid());
-    }
-
-    /**
-     * @dataProvider providerMaxValue
-     * @covers PhpValidation::setMaxValue
-     */
-    public function testMaxValue($value, $maxValue) {
-        $this->assertTrue($this->_phpValidation->set($value, "int")->setMaxValue($maxValue)->isValid());
-    }
-
-    /**
-     * MaxValue fonksiyonu için bazı degerler atayarak denemeler yapiyorum
-     * @return type 
-     */
-    public function providerMaxValue() {
-        return array(
-            array(1, 5),
-            array(1, 6),
-            array(-1, 5),
-            array(-10, 0)
-        );
-    }
-
-    /**
-     * @dataProvider providerMinLength
-     * @param type $value
-     * @param type $maxValue 
-     */
-    public function testMinLength($value, $maxValue) {
-        $this->assertTrue($this->_phpValidation->set($value, "string")->setMinLength($maxValue)->isValid());
-    }
-
-    /**
-     * MinLength fonksiyonu için bazı degerler atayarak denemeler yapiyorum
-     * @return type 
-     */
-    public function providerMinLength() {
-        return array(
-            array("selam", 2),
-            array("selam", 3),
-            array("ssssssssssss", 6),
-            array("denemem", 7)
-        );
-    }
-
-    /**
-     * @covers PhpValidation::isEmail
-     * @covers PhpValidation::set
-     * @covers PhpValidation::isValid
-     * @dataProvider providerIsEmail
-     * @param type $email 
-     */
-    public function testIsEmail($email) {
-        $this->assertTrue($this->_phpValidation->set($email, "string")->isEmail()->isValid());
-    }
-
-    public function providerIsEmail() {
-        return array(
-            array("farid@gmail.com"),
-            array("faridm88@hotmail.com")
-        );
-    }
 }
+
 ?>
