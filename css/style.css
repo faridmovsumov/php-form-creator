@@ -36,5 +36,33 @@ root {
      color: red;
 }
 
+/*input
+{
+
+    color: black;
+    background: white;
+    border: 2px solid gray;
+    padding: 2px;
+    font-weight:bold;
+
+}
+
+select
+{
+    color: black;
+    background: white;
+    border: 2px solid gray;
+    padding: 2px;
+    font-weight:bold;
+
+}*/
+
+select:focus, input:focus {
+    color: #111111;
+    border: 2px solid #ef8888;
+    font-weight:bold;
+    background: White;
+}
+
 
 
