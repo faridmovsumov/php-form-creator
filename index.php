@@ -24,9 +24,11 @@ try {
     $form->addRadioButton("cinsiyet", "erkek", "Erkek",array("checked"=>"checked"));
     $form->addRadioButton("cinsiyet", "bayan", "Bayan");
     $form->addComboBox("carbrand","Arabanızın Markası", array('mercedes' => 'Mercedes', 'bmw' => 'BMW'));
-    $form->addTextArea(32, 5, "adres","Adres");
-    $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum")->setValidation(array("mustBeChecked"=>true));
+    //$form->addTextArea(32, 5, "adres","Adres");
+    //$form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum")->setValidation(array("mustBeChecked"=>true));
+    $form->addTermsOfUse("files/file.txt",true);
     $form->addInput("submit", "dugme", "Kaydet");
+    
     echo $form->show();
 } catch (Exception $ex) {
     echo $ex->getMessage();

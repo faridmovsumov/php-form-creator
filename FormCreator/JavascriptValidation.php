@@ -10,7 +10,8 @@ class JavascriptValidation extends Validation {
 
     private $_formElementId;
     private static $_jsCode = "";
-    protected $_mustBeChecked=false;
+    private static $_extraJSCode="";
+    protected $_mustBeChecked = false;
 
     public function getFormElementId() {
         return $this->_formElementId;
@@ -26,9 +27,10 @@ class JavascriptValidation extends Validation {
         $jsCode.="<script type=text/javascript>
 
                  $(document).ready(function(){
-                                     
+                        var warnings='';             
                         $('#formId').submit(function() {
-                        var warnings='';
+                        
+                        warnings='';
                     
                             " . static::$_jsCode . "
 
@@ -37,9 +39,11 @@ class JavascriptValidation extends Validation {
                                 $('#warnings').html(warnings);
                                 return false;
                             }
-                        });                      
-                });
-                    
+                        });
+                            
+                        ".static::$_extraJSCode."
+
+                });                   
                  </script>";
 
         return $jsCode;
@@ -95,6 +99,48 @@ class JavascriptValidation extends Validation {
 
         static::$_jsCode.=$jsCode;
         return $jsCode;
+    }
+
+    public function addTermsOfUseReadControl() {
+        $jsCode = "";
+
+        //Kullanıcı sözleşmesinin en altına gelindiği zaman checkbox görünür yapılır
+        $jsCode =
+        "
+                    $('input[type=submit]').attr('disabled','disabled');
+
+
+                    $('#touCheckBox').change(function() {
+                        
+                        if($('#touCheckBox').is(':checked'))
+                        {
+                            $('input[type=submit]').removeAttr('disabled');
+                        }
+                        else
+                        {
+                            $('input[type=submit]').attr('disabled','disabled');
+                        }
+                        
+                        
+                    });
+
+                    
+
+                    if(warnings=='')
+                    {
+                        $('#kullanicisozlesmesi').hide();
+                    }
+
+                    $('#touContent').scroll(function() {
+        
+                         if($('#touContent').scrollTop() == 2448)
+                         {
+                             $('#kullanicisozlesmesi').fadeIn('slow');
+                         }
+                    });
+        ";
+
+        static::$_extraJSCode.=$jsCode;
     }
 
 }

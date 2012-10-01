@@ -78,13 +78,15 @@ class Form {
      */
     public function show() {
         $result = "";
+        
+        $result.="\n" . $this->_javascriptValidation->getJavascriptValidationCode()."\n";
 
         $formAttributes = $this->getSettedAttributes();
 
         if (isset($this->_additionalParams)) {
             $formAttributes.=$this->_additionalParams;
         }
-
+        
         $result.="<table $this->_tableAttributes >\n";
 
         $result.="<tr class='row'><td id='warnings' colspan='2' class='warnings'></td></tr>";
@@ -97,7 +99,7 @@ class Form {
             }
         }
 
-        $result.="\n" . $this->_javascriptValidation->getJavascriptValidationCode();
+        
 
         return $result;
     }
@@ -225,6 +227,9 @@ class Form {
         }
 
         $result.="<td colspan='2' class='col double'>$label:<br/><textarea $attributes >";
+        if (isset($optionalAttributes['content'])) {
+            $result.=$optionalAttributes['content'];
+        }
         $result.="</textarea></td>";
 
         $this->_formElementsArray[$name . "-" . $originalLabel . "-" . "textarea"] = $result;
@@ -275,7 +280,7 @@ class Form {
             $attributesString.=$attributeKey . "='" . $val . "' ";
         }
 
-        $result = "<td class='col double' colspan='2' ><input $attributesString /> $label <br /></td>";
+        $result = "<td class='col double' colspan='2' ><div id='$name'><input $attributesString /> $label </div></td>";
 
         $this->_formElementsArray[$name . "-" . $originalLabel . "-" . "checkbox"] = $result;
         return $this;
@@ -357,13 +362,11 @@ class Form {
         $elementId = $index[0];
         $elementType = $index[2];
 
-        if(isset($elementId) && isset($elementLabel) && isset($elementType)) {
+        if (isset($elementId) && isset($elementLabel) && isset($elementType)) {
             $this->_javascriptValidation->setFormElementId($elementId);
             $this->_javascriptValidation->setLabel($elementLabel);
             $this->_javascriptValidation->setType($elementType);
-        }
-        else
-        {
+        } else {
             throw new Exception("Id, Type veya Label atanmamış");
         }
         //input type text veya textarea oldugu durumlar icin
@@ -386,6 +389,22 @@ class Form {
         $this->_jsValidationCode.=$this->_javascriptValidation->generateCode();
     }
 
+    public function addTermsOfUse($filePath, $readControl = false) {
+
+        
+        if (file_exists($filePath)) {
+            $this->addTextArea(35, 10, "touContent", "Kullanıcı Sözleşmesi",array("style"=>"resize:none","readonly"=>"readonly","content" => file_get_contents($filePath)));
+        }
+        
+        
+        $this->addCheckBox("kullanicisozlesmesi", "kullanicisozlesmesi", "Kullanıcı sözleşmesini okudum",array("id"=>"touCheckBox"));
+        
+        if($readControl)
+        {
+            $this->_javascriptValidation->addTermsOfUseReadControl();
+        }
+        
+    }
 }
 
 ?>

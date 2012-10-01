@@ -1,9 +1,15 @@
 //$(document).ready(function (){
 //    
-//    $('#formId').submit(function() {
-//        $('#warnings').html("Uyarılar");
-//        return false;
-//    });   
+//    
+//    $('#kullanicisozlesmesi').hide();
+//    
+//    $('#touContent').scroll(function() {
+//        
+//            if($('#touContent').scrollTop() == 2448)
+//            {
+//                $('#kullanicisozlesmesi').fadeIn('slow');
+//            }
+//    });
 //});
 
 
