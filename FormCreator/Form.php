@@ -15,9 +15,7 @@ class Form {
     private $_formElementsArray;
     private $_tableAttributes = "";
     private $_javascriptValidation = "";
-    private $_jsValidation;
-    private $_phpValidation;
-    private $_jsValidationCode = "";
+    
 
     /**
      * Bir formda action url kesinlikle belirtilmelidir.
@@ -32,6 +30,10 @@ class Form {
         $this->_javascriptValidation = new JavascriptValidation();
     }
 
+    /**
+     * Action döndürür
+     * @return type 
+     */
     public function getAction() {
         return $this->_action;
     }
@@ -52,6 +54,10 @@ class Form {
         }
     }
 
+    /**
+     * Metod dondürür post veya get
+     * @return type 
+     */
     public function getMethod() {
         return $this->_method;
     }
@@ -98,9 +104,6 @@ class Form {
                 $result.="<tr class='row'>" . $formElement . "</tr>\n";
             }
         }
-
-        
-
         return $result;
     }
 
@@ -349,6 +352,12 @@ class Form {
         return $this;
     }
 
+    /**
+     * Validation kuralları atanır required, min, max,mustBeChecked şu an için desteklenen javascript
+     * calidation türleridir.
+     * @param type $validationRulesArray
+     * @throws Exception 
+     */
     public function setValidation($validationRulesArray = array()) {
         $lastHtmlElementIdAndLabel = "";
         $lastHtmlElementIdAndLabel = array_pop(array_keys($this->_formElementsArray));
@@ -386,9 +395,15 @@ class Form {
         if (isset($validationRulesArray['mustBeChecked'])) {
             $this->_javascriptValidation->setMustBeChecked($validationRulesArray['mustBeChecked']);
         }
-        $this->_jsValidationCode.=$this->_javascriptValidation->generateCode();
+        $this->_javascriptValidation->generateCode();
     }
 
+    /**
+     * Kullanıcı sözleşmesi eklenmesini kolaylaştırı
+     * textarea içerisinde kullanıcı sözleşmesi ve bir CheckBox atanır
+     * @param type $filePath Kullanıcı sözleşmesi için bir dosya yolu vermeniz gerekir
+     * @param type $readControl Javascript kontrollerinin yapılıp yapılmayacağını belirler yapılması için true olmalıdır
+     */
     public function addTermsOfUse($filePath, $readControl = false) {
 
         

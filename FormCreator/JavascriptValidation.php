@@ -21,6 +21,11 @@ class JavascriptValidation extends Validation {
         $this->_formElementId = $formElementId;
     }
 
+    /**
+     * generateCode metodunda üretilen kodları ve eğer varsa kullanıcı sözleşmesine ait javascript
+     * kontrollerinin kodlarını belli bir düzende oluşturur.
+     * @return \strıng 
+     */
     public function getJavascriptValidationCode() {
         $jsCode = "";
 
@@ -49,10 +54,15 @@ class JavascriptValidation extends Validation {
         return $jsCode;
     }
 
+    /**
+     * Javascript kodlarının üretildiği metoddur
+     * @return \strıng 
+     */
     public function generateCode() {
         $jsCode = "";
         //mesajları yazdırmak lazım
 
+        //Required kontrolu
         if ($this->_type == 'text' || $this->_type == 'textarea' || $this->_type == 'password') {
             if ($this->_required) {
                 $jsCode.="
@@ -101,6 +111,11 @@ class JavascriptValidation extends Validation {
         return $jsCode;
     }
 
+    /**
+     * Kullanıcı sözleşmesi için javascript kontrolleri oluşturur
+     * scroll textareanın en sonuna geldiğinde checkbox görünür vaziyete getirilir
+     * checkbox cliklenmedikçe submit butonu aktif olmaz.
+     */
     public function addTermsOfUseReadControl() {
         $jsCode = "";
 
@@ -123,8 +138,6 @@ class JavascriptValidation extends Validation {
                         
                         
                     });
-
-                    
 
                     if(warnings=='')
                     {
