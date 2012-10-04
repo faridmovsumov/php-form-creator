@@ -80,7 +80,7 @@ class Form {
 
     /**
      * Oluuşturduğumuz formu geri döndürür.
-     *  
+     * Ekrana basılacak tüm kodları bu metod döndürür 
      */
     public function show() {
         $result = "";
@@ -405,21 +405,17 @@ class Form {
      * @param type $readControl Javascript kontrollerinin yapılıp yapılmayacağını belirler yapılması için true olmalıdır
      */
     public function addTermsOfUse($filePath, $readControl = false) {
-
         
         if (file_exists($filePath)) {
             $this->addTextArea(35, 10, "touContent", "Kullanıcı Sözleşmesi",array("style"=>"resize:none","readonly"=>"readonly","content" => file_get_contents($filePath)));
         }
-        
-        
+           
         $this->addCheckBox("kullanicisozlesmesi", "kullanicisozlesmesi", "Kullanıcı sözleşmesini okudum",array("id"=>"touCheckBox"));
         
         if($readControl)
         {
             $this->_javascriptValidation->addTermsOfUseReadControl();
         }
-        
     }
 }
-
 ?>

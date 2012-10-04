@@ -13,3 +13,5 @@
     $form->addCheckBox("termofuse", "read", "Kullanmıcı Sözleşmesini okudum")->setValidation(array("mustBeChecked"=>true));
     $form->addInput("submit", "dugme", "Kaydet");
     echo $form->show();
+
+Testleri topluca çalıştırmak amacıyla TestSuite.php çalıştırılmalıdır. 

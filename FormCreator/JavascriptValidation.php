@@ -10,6 +10,7 @@ class JavascriptValidation extends Validation {
 
     private $_formElementId;
     private static $_jsCode = "";
+    //Kullanıcı sözleşmesi kullanıldığında ilgili javascript kodları burada biriktirilir
     private static $_extraJSCode="";
     protected $_mustBeChecked = false;
 
